@@ -66,7 +66,38 @@ public class LoginSignupPage {
         return optionChoosing();
 
     }
-
+    
+    private static int PasswordStrengthCheck(String password){
+        
+        //total score of password
+        int iPasswordScore = 0;
+        
+        if( password.length() < 8 )
+            return 0;
+        else if( password.length() >= 10 )
+            iPasswordScore += 2;
+        else 
+            iPasswordScore += 1;
+        
+        //if it contains one digit, add 2 to total score
+        if( password.matches("(?=.*[0-9]).*") )
+            iPasswordScore += 2;
+        
+        //if it contains one lower case letter, add 2 to total score
+        if( password.matches("(?=.*[a-z]).*") )
+            iPasswordScore += 2;
+        
+        //if it contains one upper case letter, add 2 to total score
+        if( password.matches("(?=.*[A-Z]).*") )
+            iPasswordScore += 2;    
+        
+        //if it contains one special character, add 2 to total score
+        if( password.matches("(?=.*[~!@#$%^&*()_-]).*") )
+            iPasswordScore += 2;
+        
+        return iPasswordScore;    
+    }
+    
     public static void run() throws NoSuchAlgorithmException {
         User user;
         while (true){
@@ -99,6 +130,31 @@ public class LoginSignupPage {
                 String userName = scanner.nextLine();
                 System.out.print("Enter a password: ");
                 String passWord = scanner.nextLine();
+                while (true)
+                {
+	                int passStrength = PasswordStrengthCheck(passWord) ;
+	                String agreed ;
+	                if (passStrength <=4)
+	                {
+	                	System.out.println("Your password is weak :/ enter another one : ");
+	                	passWord = scanner.nextLine() ;
+	                }
+	                else
+	                {
+	                	System.out.println("Your passWord strength is " + passStrength + "out of 10 ");
+	                	System.out.println("Do you want to keep this one ? 1:Yes 2:No");
+	                	agreed = scanner.nextLine() ;
+	                	if ( agreed.equals("1"))
+	                	{
+	                		break ;
+	                	}
+	                	else
+	                	{
+	                		System.out.println("Enter another one then :");
+	                		passWord = scanner.nextLine() ;
+	                	}
+	                 }
+                }
                 user = User.signUp(userName, passWord);
                 if (user == null){
                     System.out.println("\u001B[31m" + "User name not available!" + "\u001B[0m");
@@ -120,6 +176,7 @@ public class LoginSignupPage {
                     System.out.println("\u001B[32m" + "Welcome " + user.getUserName() +"!" + "\u001B[0m");
                     System.out.println("\u001B[32m" + "++++++++++++++++++++++++++++++++++++++++" + "\u001B[0m");
                 }
+                
                 UserPage.run(user);
             }
         }
